@@ -302,25 +302,19 @@ export class AgentApi {
         memory: memory,
       });
 
-      // executor.call(
-      //   {
-      //     input: reqBody.messages.slice(-1)[0].content,
-      //   },
-      //   [handler],
-      // );
-      // return new Response(this.transformStream.readable, {
-      //   headers: { "Content-Type": "text/event-stream" },
-      // });
-      
-      //Modified code below
-      return new Response(JSON.stringify(await executor.call(
+      executor.call(
         {
           input: reqBody.messages.slice(-1)[0].content,
         },
         [handler],
-      )), {
+      );
+      return new Response(JSON.stringify(this.transformStream.readable), {
+        // headers: { "Content-Type": "text/event-stream" },
         headers: { "Content-Type": "application/json" },
       });
+      
+      //Modified code below
+      
       //=======================================
     } catch (e) {
       return new Response(JSON.stringify({ error: (e as any).message }), {
