@@ -302,7 +302,7 @@ export class AgentApi {
         memory: memory,
       });
 
-      const response = await executor.call(
+      const response = executor.call(
         {
           input: reqBody.messages.slice(-1)[0].content,
         },
