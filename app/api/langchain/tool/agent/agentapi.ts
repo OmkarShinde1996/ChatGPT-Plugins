@@ -302,13 +302,13 @@ export class AgentApi {
         memory: memory,
       });
 
-      executor.call(
+      const response = await executor.call(
         {
           input: reqBody.messages.slice(-1)[0].content,
         },
         [handler],
       );
-      console.log("[response from agentapi.ts file]",this.transformStream.readable)
+      console.log("[response from agentapi.ts file]",JSON.stringify(response))
       return new Response(this.transformStream.readable, {
         headers: { "Content-Type": "text/event-stream" },
       });
