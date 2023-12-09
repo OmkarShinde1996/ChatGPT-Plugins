@@ -308,14 +308,19 @@ export class AgentApi {
         },
         [handler],
       );
-      return new Response(this.transformStream.readable, {
-        headers: { "Content-Type": "text/event-stream" },
-      });
+      // return new Response(this.transformStream.readable, {
+      //   headers: { "Content-Type": "text/event-stream" },
+      // });
       
       //Modified code below
-      // return new Response(JSON.stringify(response), {
-      //   headers: { "Content-Type": "application/json" },
-      // });
+      return new Response(JSON.stringify(executor.call(
+        {
+          input: reqBody.messages.slice(-1)[0].content,
+        },
+        [handler],
+      )), {
+        headers: { "Content-Type": "application/json" },
+      });
       //=======================================
     } catch (e) {
       return new Response(JSON.stringify({ error: (e as any).message }), {
