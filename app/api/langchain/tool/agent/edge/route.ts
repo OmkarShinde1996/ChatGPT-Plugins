@@ -63,49 +63,12 @@ async function handle(req: NextRequest) {
     );
     var edgeTools = await edgeTool.getCustomTools();
     var tools = [...edgeTools];
-    // var resp = await agentApi.getApiHandler(req, reqBody, tools);
-    // return resp;
+    var resp = await agentApi.getApiHandler(req, reqBody, tools);
+    console.log("response is : ",resp)
+    return resp;
     
     //Modified code below
-    try {
-    const resp = await agentApi.getApiHandler(req, reqBody, tools);
-  
-    // Extract the JSON response from the response stream
-    const reader = resp.readable.getReader();
-    const chunks = [];
-    let chunk;
-    while ((chunk = await reader.read())) {
-      chunks.push(chunk.value);
-    }
-    const jsonResponse = JSON.parse(new TextDecoder().decode(Uint8Array.from(chunks)));
-
-    // Handle the response based on its type
-    if (jsonResponse.isSuccess) {
-      // Success response
-      return NextResponse.json(jsonResponse, {
-        status: 200,
-      });
-    } else if (jsonResponse.error) {
-      // Error response
-      return NextResponse.json(jsonResponse, {
-        status: 500,
-      });
-    } else {
-      // Unexpected response
-      return NextResponse.json({
-        error: "Unexpected response received from agentApi.getApiHandler",
-      }, {
-        status: 500,
-      });
-    }
-  } catch (e) {
-    // Handle any errors
-    return NextResponse.json({
-      error: (e as any).message,
-    }, {
-      status: 500,
-    });
-  }
+    
     //=======================================
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as any).message }), {
