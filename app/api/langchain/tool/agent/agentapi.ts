@@ -313,7 +313,7 @@ export class AgentApi {
       // });
       
       //Modified code below
-      return new Response(JSON.stringify(executor.call(
+      return new Response(JSON.stringify(await executor.call(
         {
           input: reqBody.messages.slice(-1)[0].content,
         },
