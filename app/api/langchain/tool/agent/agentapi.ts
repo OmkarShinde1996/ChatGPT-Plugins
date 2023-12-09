@@ -169,7 +169,7 @@ export class AgentApi {
       baseUrl = reqBaseUrl;
     if (!baseUrl.endsWith("/v1"))
       baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
-    console.log("[baseUrl]", baseUrl);
+    // console.log("[baseUrl]", baseUrl);
     return baseUrl;
   }
 
@@ -200,7 +200,7 @@ export class AgentApi {
         baseUrl = reqBody.baseUrl;
       if (!baseUrl.endsWith("/v1"))
         baseUrl = baseUrl.endsWith("/") ? `${baseUrl}v1` : `${baseUrl}/v1`;
-      console.log("[baseUrl]", baseUrl);
+      // console.log("[baseUrl]", baseUrl);
 
       var handler = await this.getHandler(reqBody);
 
@@ -216,7 +216,7 @@ export class AgentApi {
         }
       }
       if (process.env.BING_SEARCH_API_KEY) {
-        console.log("[BING_SEARCH_API_KEY]",process.env.BING_SEARCH_API_KEY)
+        // console.log("[BING_SEARCH_API_KEY]",process.env.BING_SEARCH_API_KEY)
         let bingSearchTool = new langchainTools["BingSerpAPI"](
           process.env.BING_SEARCH_API_KEY,
         );
@@ -227,7 +227,7 @@ export class AgentApi {
         });
       }
       if (process.env.SERPAPI_API_KEY) {
-        console.log("[SERPAPI_API_KEY]",process.env.SERPAPI_API_KEY)
+        // console.log("[SERPAPI_API_KEY]",process.env.SERPAPI_API_KEY)
         let serpAPITool = new langchainTools["SerpAPI"](
           process.env.SERPAPI_API_KEY,
         );
@@ -274,7 +274,7 @@ export class AgentApi {
           if (message.role === "assistant")
             pastMessages.push(new AIMessage(message.content));
         });
-      console.log("[pastMessages]",pastMessages)
+      // console.log("[pastMessages]",pastMessages)
       const memory = new BufferMemory({
         memoryKey: "chat_history",
         returnMessages: true,
@@ -302,28 +302,28 @@ export class AgentApi {
         memory: memory,
       });
 
-      // executor.call(
+      executor.call(
+        {
+          input: reqBody.messages.slice(-1)[0].content,
+        },
+        [handler],
+      );
+      console.log("[response from agentapi.ts file]",this.transformStream.readable)
+      return new Response(this.transformStream.readable, {
+        headers: { "Content-Type": "text/event-stream" },
+      });
+      
+      //Modified code below
+      // const response = await executor.call(
       //   {
       //     input: reqBody.messages.slice(-1)[0].content,
       //   },
       //   [handler],
       // );
 
-      // return new Response(this.transformStream.readable, {
-      //   headers: { "Content-Type": "text/event-stream" },
+      // return new Response(JSON.stringify(response), {
+      //   headers: { "Content-Type": "application/json" },
       // });
-      
-      //Modified code below
-      const response = await executor.call(
-        {
-          input: reqBody.messages.slice(-1)[0].content,
-        },
-        [handler],
-      );
-
-      return new Response(JSON.stringify(response), {
-        headers: { "Content-Type": "application/json" },
-      });
       //======================================================
     } catch (e) {
       return new Response(JSON.stringify({ error: (e as any).message }), {
