@@ -37,13 +37,14 @@ async function handle(req: NextRequest) {
       },
       { basePath: baseUrl },
     );
+    console.log("model = ", model);
     const embeddings = new OpenAIEmbeddings(
       {
         openAIApiKey: apiKey,
       },
       { basePath: baseUrl },
     );
-
+    console.log("embeddings = ", embeddings);
     var dalleCallback = async (data: string) => {
       var response = new ResponseBody();
       response.message = data;
@@ -52,7 +53,7 @@ async function handle(req: NextRequest) {
         encoder.encode(`data: ${JSON.stringify(response)}\n\n`),
       );
     };
-
+    console.log("dalleCallback = ", dalleCallback);
     var edgeTool = new EdgeTool(
       apiKey,
       baseUrl,
@@ -62,7 +63,9 @@ async function handle(req: NextRequest) {
     );
     var edgeTools = await edgeTool.getCustomTools();
     var tools = [...edgeTools];
-    return await agentApi.getApiHandler(req, reqBody, tools);
+    var resp = await agentApi.getApiHandler(req, reqBody, tools);
+    console.log("resp = ", resp);
+    return resp;
   } catch (e) {
     return new Response(JSON.stringify({ error: (e as any).message }), {
       status: 500,
