@@ -216,6 +216,7 @@ export class AgentApi {
         }
       }
       if (process.env.BING_SEARCH_API_KEY) {
+        console.log("[BING_SEARCH_API_KEY]",process.env.BING_SEARCH_API_KEY)
         let bingSearchTool = new langchainTools["BingSerpAPI"](
           process.env.BING_SEARCH_API_KEY,
         );
@@ -226,6 +227,7 @@ export class AgentApi {
         });
       }
       if (process.env.SERPAPI_API_KEY) {
+        console.log("[SERPAPI_API_KEY]",process.env.SERPAPI_API_KEY)
         let serpAPITool = new langchainTools["SerpAPI"](
           process.env.SERPAPI_API_KEY,
         );
@@ -272,7 +274,7 @@ export class AgentApi {
           if (message.role === "assistant")
             pastMessages.push(new AIMessage(message.content));
         });
-
+      console.log("[pastMessages]",pastMessages)
       const memory = new BufferMemory({
         memoryKey: "chat_history",
         returnMessages: true,
@@ -300,17 +302,29 @@ export class AgentApi {
         memory: memory,
       });
 
-      executor.call(
+      // executor.call(
+      //   {
+      //     input: reqBody.messages.slice(-1)[0].content,
+      //   },
+      //   [handler],
+      // );
+
+      // return new Response(this.transformStream.readable, {
+      //   headers: { "Content-Type": "text/event-stream" },
+      // });
+      
+      //Modified code below
+      const response = await executor.call(
         {
           input: reqBody.messages.slice(-1)[0].content,
         },
         [handler],
       );
 
-      console.log("returning response");
-      return new Response(this.transformStream.readable, {
-        headers: { "Content-Type": "text/event-stream" },
+      return new Response(JSON.stringify(response), {
+        headers: { "Content-Type": "application/json" },
       });
+      //======================================================
     } catch (e) {
       return new Response(JSON.stringify({ error: (e as any).message }), {
         status: 500,
