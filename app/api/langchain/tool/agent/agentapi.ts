@@ -309,8 +309,7 @@ export class AgentApi {
         [handler],
       );
       return new Response(this.transformStream.readable, {
-        // headers: { "Content-Type": "text/event-stream" },
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/event-stream" },
       });
       
       //Modified code below
