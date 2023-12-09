@@ -302,12 +302,12 @@ export class AgentApi {
         memory: memory,
       });
 
-      executor.call(
-        {
-          input: reqBody.messages.slice(-1)[0].content,
-        },
-        [handler],
-      );
+      // executor.call(
+      //   {
+      //     input: reqBody.messages.slice(-1)[0].content,
+      //   },
+      //   [handler],
+      // );
       // return new Response(this.transformStream.readable, {
       //   headers: { "Content-Type": "text/event-stream" },
       // });
