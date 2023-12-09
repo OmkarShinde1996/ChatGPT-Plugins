@@ -302,29 +302,22 @@ export class AgentApi {
         memory: memory,
       });
 
-      const response = executor.call(
+      const response = await executor.call(
         {
           input: reqBody.messages.slice(-1)[0].content,
         },
         [handler],
       );
-      console.log("[response from agentapi.ts file]",JSON.stringify(response))
-      return new Response(this.transformStream.readable, {
-        headers: { "Content-Type": "text/event-stream" },
-      });
+      console.log("[response from agentapi.ts file]",response)
+      // return new Response(this.transformStream.readable, {
+      //   headers: { "Content-Type": "text/event-stream" },
+      // });
       
       //Modified code below
-      // const response = await executor.call(
-      //   {
-      //     input: reqBody.messages.slice(-1)[0].content,
-      //   },
-      //   [handler],
-      // );
-
-      // return new Response(JSON.stringify(response), {
-      //   headers: { "Content-Type": "application/json" },
-      // });
-      //======================================================
+      return new Response(JSON.stringify(response), {
+        headers: { "Content-Type": "application/json" },
+      });
+      //=======================================
     } catch (e) {
       return new Response(JSON.stringify({ error: (e as any).message }), {
         status: 500,
