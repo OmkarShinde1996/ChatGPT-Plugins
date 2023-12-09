@@ -63,9 +63,9 @@ async function handle(req: NextRequest) {
     );
     var edgeTools = await edgeTool.getCustomTools();
     var tools = [...edgeTools];
-    var resp = await agentApi.getApiHandler(req, reqBody, tools);
-    console.log("response is : ",resp)
-    return resp;
+    // var resp = await agentApi.getApiHandler(req, reqBody, tools);
+    console.log("response is : ",await agentApi.getApiHandler(req, reqBody, tools))
+    return await agentApi.getApiHandler(req, reqBody, tools);
     
     //Modified code below
     
